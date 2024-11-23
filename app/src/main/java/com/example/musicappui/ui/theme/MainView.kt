@@ -73,9 +73,11 @@ import com.example.musicappui.Screen
 import com.example.musicappui.chat.Content
 import com.example.musicappui.screensInBottom
 import com.example.musicappui.screensInDrawer
+import com.example.musicappui.ui.theme.AboutUsScreen
 import com.example.musicappui.ui.theme.AccountDialog
 import com.example.musicappui.ui.theme.AccountView
 import com.example.musicappui.ui.theme.BrowseView
+import com.example.musicappui.ui.theme.ContactScreen
 import com.example.musicappui.ui.theme.FavoriteListScreen
 import com.example.musicappui.ui.theme.FetchNewsViewModel
 import com.example.musicappui.ui.theme.HomeView
@@ -536,10 +538,15 @@ fun Navigation(navController:NavController,viewModel: MainViewModel,pd:PaddingVa
                 }
                 composable("favorite_list_screen") {
                     FavoriteListScreen(favoriteList = favoriteList,navController)
-
-
-
                 }
+
+                composable("contact_us") {
+                    ContactScreen(navController)
+                }
+                composable("about_us") {
+                    AboutUsScreen(navController)
+                }
+
                 composable(Screen.DrawerScreen.Account.route) {
                     AccountView(authViewModel)
                 }

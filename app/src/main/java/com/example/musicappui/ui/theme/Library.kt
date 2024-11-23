@@ -31,6 +31,16 @@ fun Library(navController: NavController) {
                 if (lib.name == "Favourite NewsList") {
                     navController.navigate("favorite_list_screen")
                 }
+                if (lib.name == "Famous News Articles") {
+                    navController.navigate("famous_news_articles")
+                }
+                if (lib.name == "Contact Us") {
+                    navController.navigate("contact_us")
+                }
+                if (lib.name == "About Us") {
+                    navController.navigate("about_us")
+                }
+
             })
         }
     }
