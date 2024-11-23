@@ -22,7 +22,12 @@ class AuthViewModel : ViewModel() {
     private val _userDetails = MutableLiveData<Result<Map<String, Any>>>()
     val userDetails: LiveData<Result<Map<String, Any>>> get() = _userDetails
 
-    fun login(email: String, password: String) {
+    fun isUserLoggedIn(): Boolean {
+        return userRepository.getCurrentUser() != null
+    }
+
+
+   fun login(email: String, password: String) {
         viewModelScope.launch {
             val result = userRepository.login(email, password)
             _authResult.value = result
@@ -34,6 +39,8 @@ class AuthViewModel : ViewModel() {
             }
         }
     }
+
+
 
     fun signUp(email: String, password: String, firstName: String, lastName: String) {
         viewModelScope.launch {
@@ -52,6 +59,10 @@ class AuthViewModel : ViewModel() {
         viewModelScope.launch {
             _userDetails.value = userRepository.getUserDetails(userId)
         }
+    }
+
+    fun logout() {
+        userRepository.logout()
     }
 
     fun getCurrentUser(): FirebaseUser? {

@@ -11,9 +11,15 @@ fun NavigationGraph(
     navController: NavHostController,
     authViewModel: AuthViewModel
 ) {
+    val startDestination = if (authViewModel.isUserLoggedIn()) {
+        Screen.MainView.route
+    } else {
+        Screen.LoginScreen.route
+    }
+
     NavHost(
         navController = navController,
-        startDestination = Screen.SignupScreen.route
+        startDestination = startDestination
     ) {
         composable(Screen.SignupScreen.route) {
             SignUpScreen(authViewModel = authViewModel,
@@ -31,6 +37,8 @@ fun NavigationGraph(
                 }
             )
         }
+
+
         composable(Screen.MainView.route) {
             MainView(navController = navController)
         }

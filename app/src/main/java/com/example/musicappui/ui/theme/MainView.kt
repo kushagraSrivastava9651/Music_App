@@ -66,6 +66,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.musicappui.Login_data.AuthViewModel
+import com.example.musicappui.Login_data.LoginScreen
 import com.example.musicappui.Login_data.UserRepository
 import com.example.musicappui.MainViewModel
 import com.example.musicappui.R
@@ -134,33 +135,7 @@ fun MainView(navController: NavController) {
     val controller: NavController= rememberNavController()
     val navBackStackEntry by controller.currentBackStackEntryAsState()
     val currentRoute =navBackStackEntry?.destination?.route
-/*
-    val bottomBar :@Composable ()->Unit={
-        if(currentScreen is Screen.DrawerScreen||currentScreen == Screen.BottomScreen.Home){
-            BottomNavigation(Modifier.wrapContentSize()) {
-                screensInBottom.forEach{
-                        item->
-                    val isSelected=currentRoute==item.bRoute
-                    val tint =if(isSelected) Color.White
-                    else Color.Black
-                    BottomNavigationItem(
-                        selected = currentRoute==item.bRoute,
-                        onClick = {controller.navigate(item.bRoute)
-                            title.value=item.bTitle},
-                        icon = {
 
-                            Icon(tint=tint,contentDescription = item.bTitle,
-                                painter =   painterResource(id = item.icon)) },
-                        label = { Text(text = item.bTitle, color = tint)},
-                        selectedContentColor = Color.White,
-                        unselectedContentColor = Color.Black
-                    )
-                }
-            }
-        }
-    }
-
-*/
 
     val bottomBar: @Composable () -> Unit = {
         if (currentScreen is Screen.DrawerScreen || currentScreen == Screen.BottomScreen.Home) {
@@ -501,7 +476,7 @@ fun Navigation(navController:NavController,viewModel: MainViewModel,pd:PaddingVa
         content = {
             NavHost(
                 navController = navController as NavHostController,
-                startDestination = Screen.DrawerScreen.Account.route,
+                startDestination = Screen.BottomScreen.Home.route  ,
                 modifier = Modifier.padding(pd)
             ) {
                 // Composables for different screens
@@ -549,6 +524,19 @@ fun Navigation(navController:NavController,viewModel: MainViewModel,pd:PaddingVa
 
                 composable(Screen.DrawerScreen.Account.route) {
                     AccountView(authViewModel)
+                }
+                composable(Screen.DrawerScreen.LogOut.route) {
+                    authViewModel.logout()
+                    LoginScreen(
+                        authViewModel = authViewModel,
+                        onNavigateToSignUp = { navController.navigate(com.example.musicappui.Login_data.Screen.SignupScreen.route) },
+                        onSignInSuccess =  {
+                            navController.navigate(com.example.musicappui.Login_data.Screen.MainView.route) {
+                                popUpTo(com.example.musicappui.Login_data.Screen.SignupScreen.route) { inclusive = true }
+                            }
+                        }
+                    )
+
                 }
                 composable(Screen.DrawerScreen.Subscription.route) {
                     SubscriptionView()

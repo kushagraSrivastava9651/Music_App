@@ -37,6 +37,11 @@ sealed class Screen(val title:String,val route:String) {
             "add_account",
             R.drawable.baseline_person_add_alt_1_24
         )
+        object LogOut :DrawerScreen(
+            "Log Out",
+            "log_out",
+            R.drawable.baseline_logout_24
+        )
 
     }
 }
@@ -50,4 +55,5 @@ val screensInBottom= listOf(
 val screensInDrawer= listOf(
     Screen.DrawerScreen.Account,
     Screen.DrawerScreen.Subscription,
-    Screen.DrawerScreen.AddAccount)
+    Screen.DrawerScreen.AddAccount,
+    Screen.DrawerScreen.LogOut)

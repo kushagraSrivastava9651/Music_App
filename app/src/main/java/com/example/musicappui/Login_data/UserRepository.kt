@@ -50,4 +50,7 @@ class UserRepository(
             Result.Error(e)
         }
     }
+    fun logout() {
+        firebaseAuth.signOut()
+    }
 }
