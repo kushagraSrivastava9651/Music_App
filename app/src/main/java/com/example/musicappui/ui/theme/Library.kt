@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.musicappui.Lib
 import com.example.musicappui.libraries
+import com.google.firebase.firestore.FirebaseFirestore
 
 @Composable
 fun Library(navController: NavController) {
@@ -31,8 +32,8 @@ fun Library(navController: NavController) {
                 if (lib.name == "Favourite NewsList") {
                     navController.navigate("favorite_list_screen")
                 }
-                if (lib.name == "Famous News Articles") {
-                    navController.navigate("famous_news_articles")
+                if (lib.name == "Polls and Surveys") {
+                    navController.navigate("polls_and_surveys")
                 }
                 if (lib.name == "Contact Us") {
                     navController.navigate("contact_us")
@@ -40,6 +41,10 @@ fun Library(navController: NavController) {
                 if (lib.name == "About Us") {
                     navController.navigate("about_us")
                 }
+                if (lib.name == "Previous Polls & Survey") {
+                    navController.navigate("polls")
+                }
+
 
             })
         }
@@ -73,3 +78,5 @@ fun LibItem(lib: Lib, onClick: () -> Unit) {
         }
         Divider(color = Color.DarkGray)    }
 }
+
+

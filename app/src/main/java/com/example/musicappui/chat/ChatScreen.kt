@@ -95,8 +95,6 @@ fun Content(navController: NavController, viewModel: ChatViewModel = viewModel()
 }
 
 
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatScreen(
@@ -104,7 +102,11 @@ fun ChatScreen(
     uiState: chatUiState,
     onSendClick: (String, List<Uri>) -> Unit
 ) {
-    val backgroundColor = MaterialTheme.colorScheme.background
+    val backgroundColor = Color(0xFFFAFAFA) // White background
+    val primaryColor = Color(0xFF4A90E2) // Muted Blue
+    val secondaryColor = Color(0xFF34C759) // Muted Green
+    val textColor = Color.Black
+
     var userQues by rememberSaveable { mutableStateOf("") }
     val imageUris = rememberSaveable(saver = UriCustomSaver()) { mutableStateListOf<Uri>() }
     val pickMediaLauncher = rememberLauncherForActivityResult(
@@ -116,13 +118,13 @@ fun ChatScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("AI ChatBot", color = MaterialTheme.colorScheme.onPrimary) },
+                title = { Text("AI ChatBot", color = textColor) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onPrimary)
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = textColor)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary)
+                colors = TopAppBarDefaults.topAppBarColors(  primaryColor)
             )
         },
         bottomBar = {
@@ -141,25 +143,23 @@ fun ChatScreen(
                         },
                         modifier = Modifier.padding(end = 8.dp)
                     ) {
-                        Icon(Icons.Default.AddCircle, contentDescription = "Add Image", tint = MaterialTheme.colorScheme.primary)
+                        Icon(Icons.Default.AddCircle, contentDescription = "Add Image", tint = secondaryColor)
                     }
                     OutlinedTextField(
                         value = userQues,
                         onValueChange = { userQues = it },
-                        label = { Text("User Input") },
-                        placeholder = { Text("Upload Image And Ask Question") },
+                        label = { Text("Type your question", color = textColor) },
+                        placeholder = { Text("Upload images and ask questions", color = textColor.copy(alpha = 0.6f)) },
                         modifier = Modifier.weight(1f),
                         colors = TextFieldDefaults.outlinedTextFieldColors(
-                            focusedBorderColor = Color.Black,
-                            unfocusedBorderColor = Color.Black,
-                            textColor = Color.Gray,
-                            placeholderColor = Color.Gray,
-                            cursorColor = Color.Black,
-                            focusedLabelColor = Color.Black,
-                            unfocusedLabelColor = Color.Black
+                            textColor = textColor,
+                            placeholderColor = textColor.copy(alpha = 0.6f),
+                            focusedBorderColor = primaryColor,
+                            unfocusedBorderColor = primaryColor,
+                            focusedLabelColor = textColor,
+                            unfocusedLabelColor = textColor,
+                             backgroundColor = backgroundColor
                         )
-
-
                     )
                     IconButton(
                         onClick = {
@@ -169,7 +169,7 @@ fun ChatScreen(
                         },
                         modifier = Modifier.padding(start = 8.dp)
                     ) {
-                        Icon(Icons.Default.Send, contentDescription = "Send", tint = MaterialTheme.colorScheme.primary)
+                        Icon(Icons.Default.Send, contentDescription = "Send", tint = secondaryColor)
                     }
                 }
                 AnimatedVisibility(visible = imageUris.isNotEmpty()) {
@@ -177,7 +177,7 @@ fun ChatScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                        colors = CardDefaults.cardColors(  backgroundColor)
                     ) {
                         LazyRow(
                             modifier = Modifier.padding(8.dp),
@@ -190,14 +190,14 @@ fun ChatScreen(
                                 ) {
                                     AsyncImage(
                                         model = imageUri,
-                                        contentDescription = "",
+                                        contentDescription = "Selected Image",
                                         modifier = Modifier
                                             .size(50.dp)
-                                            .background(Color.LightGray, shape = MaterialTheme.shapes.small)
+                                            .background(primaryColor.copy(alpha = 0.1f), shape = MaterialTheme.shapes.small)
                                             .padding(4.dp)
                                     )
                                     TextButton(onClick = { imageUris.remove(imageUri) }) {
-                                        Text("Remove", color = MaterialTheme.colorScheme.error)
+                                        Text("Remove", color = Color.Red)
                                     }
                                 }
                             }
@@ -215,11 +215,10 @@ fun ChatScreen(
         ) {
             when (uiState) {
                 is chatUiState.Initial -> {
-                    // Display initial state UI
                     Text(
                         text = "Start your conversation!",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onBackground,
+                        color = textColor,
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
                 }
@@ -228,7 +227,7 @@ fun ChatScreen(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                        CircularProgressIndicator(color = primaryColor)
                     }
                 }
                 is chatUiState.Success -> {
@@ -236,13 +235,12 @@ fun ChatScreen(
                         modifier = Modifier
                             .padding(16.dp)
                             .fillMaxWidth(),
-                        shape = MaterialTheme.shapes.medium,
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                        colors = CardDefaults.cardColors( secondaryColor.copy(alpha = 0.1f))
                     ) {
                         Text(
                             text = (uiState as chatUiState.Success).outputText,
                             style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurface,
+                            color = textColor,
                             modifier = Modifier.padding(16.dp)
                         )
                     }
@@ -252,13 +250,12 @@ fun ChatScreen(
                         modifier = Modifier
                             .padding(16.dp)
                             .fillMaxWidth(),
-                        shape = MaterialTheme.shapes.medium,
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)
+                        colors = CardDefaults.cardColors( Color.Red.copy(alpha = 0.1f))
                     ) {
                         Text(
                             text = (uiState as chatUiState.Error).error,
                             style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onError,
+                            color = Color.Red,
                             modifier = Modifier.padding(16.dp)
                         )
                     }

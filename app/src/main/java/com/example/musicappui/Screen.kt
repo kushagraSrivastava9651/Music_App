@@ -5,8 +5,7 @@ import androidx.annotation.DrawableRes
 
 sealed class Screen(val title:String,val route:String) {
 
-    object ChatRoomsScreen : Screen("ChatRoomScreen","chatroomscrren")
-    sealed class BottomScreen(val bTitle:String,val bRoute:String,
+     sealed class BottomScreen(val bTitle:String,val bRoute:String,
                               @DrawableRes val icon : Int):  Screen(bTitle,bRoute){
         object Home:BottomScreen("Home","home", R.drawable.home)
         object Library:BottomScreen("Library","library", R.drawable.baseline_library_music_24)

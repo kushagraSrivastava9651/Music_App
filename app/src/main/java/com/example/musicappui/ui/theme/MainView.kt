@@ -67,6 +67,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.musicappui.Login_data.AuthViewModel
 import com.example.musicappui.Login_data.LoginScreen
+import com.example.musicappui.Login_data.NavigationGraph
 import com.example.musicappui.Login_data.UserRepository
 import com.example.musicappui.MainViewModel
 import com.example.musicappui.R
@@ -80,12 +81,14 @@ import com.example.musicappui.ui.theme.AccountView
 import com.example.musicappui.ui.theme.BrowseView
 import com.example.musicappui.ui.theme.ContactScreen
 import com.example.musicappui.ui.theme.FavoriteListScreen
+import com.example.musicappui.ui.theme.FeedbackListScreen
 import com.example.musicappui.ui.theme.FetchNewsViewModel
 import com.example.musicappui.ui.theme.HomeView
 import com.example.musicappui.ui.theme.Item
 import com.example.musicappui.ui.theme.Library
 import com.example.musicappui.ui.theme.MusicAppUITheme
 import com.example.musicappui.ui.theme.MyThemedApp
+import com.example.musicappui.ui.theme.PollSurveyScreen
 import com.example.musicappui.ui.theme.SettingsScreen
 import com.example.musicappui.ui.theme.SubscriptionView
 import com.google.firebase.auth.FirebaseAuth
@@ -483,6 +486,8 @@ fun Navigation(navController:NavController,viewModel: MainViewModel,pd:PaddingVa
                 composable(Screen.BottomScreen.Home.bRoute) {
                     HomeView(navController)
                 }
+
+
                 composable(
                     route = "details/{itemId}",
                     arguments = listOf(navArgument("itemId") { type = NavType.IntType; defaultValue = 0 })
@@ -522,6 +527,13 @@ fun Navigation(navController:NavController,viewModel: MainViewModel,pd:PaddingVa
                     AboutUsScreen(navController)
                 }
 
+                composable("polls") {
+                    FeedbackListScreen(navController)
+                }
+                composable("polls_and_surveys"){
+                    PollSurveyScreen(navController)
+                }
+
                 composable(Screen.DrawerScreen.Account.route) {
                     AccountView(authViewModel)
                 }
@@ -536,6 +548,9 @@ fun Navigation(navController:NavController,viewModel: MainViewModel,pd:PaddingVa
                             }
                         }
                     )
+                    
+
+                   // NavigationGraph(navController,authViewModel)
 
                 }
                 composable(Screen.DrawerScreen.Subscription.route) {
@@ -556,6 +571,8 @@ fun Navigation(navController:NavController,viewModel: MainViewModel,pd:PaddingVa
                     // Pass the deserialized item to the DetailsScreen
                     TitleDescriptionScreen(  item.id , item.title ,item.description,item.image)
                 }
+
+
 
 
 
