@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -34,7 +33,6 @@ import androidx.compose.material.ScaffoldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.primarySurface
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -43,6 +41,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -67,7 +66,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.musicappui.Login_data.AuthViewModel
 import com.example.musicappui.Login_data.LoginScreen
-import com.example.musicappui.Login_data.NavigationGraph
 import com.example.musicappui.Login_data.UserRepository
 import com.example.musicappui.MainViewModel
 import com.example.musicappui.R
@@ -80,13 +78,12 @@ import com.example.musicappui.ui.theme.AccountDialog
 import com.example.musicappui.ui.theme.AccountView
 import com.example.musicappui.ui.theme.BrowseView
 import com.example.musicappui.ui.theme.ContactScreen
-import com.example.musicappui.ui.theme.FavoriteListScreen
+ import com.example.musicappui.ui.theme.FavoriteListScreen
 import com.example.musicappui.ui.theme.FeedbackListScreen
 import com.example.musicappui.ui.theme.FetchNewsViewModel
 import com.example.musicappui.ui.theme.HomeView
 import com.example.musicappui.ui.theme.Item
 import com.example.musicappui.ui.theme.Library
-import com.example.musicappui.ui.theme.MusicAppUITheme
 import com.example.musicappui.ui.theme.MyThemedApp
 import com.example.musicappui.ui.theme.PollSurveyScreen
 import com.example.musicappui.ui.theme.SettingsScreen
@@ -388,90 +385,6 @@ fun Navigation(navController:NavController,viewModel: MainViewModel,pd:PaddingVa
         UserRepository(firebaseAuth, firestore)
     }
 
-    /*
-        NavHost(
-            navController = navController as NavHostController,
-            startDestination = Screen.DrawerScreen.Account.route,
-            modifier = Modifier.padding(pd)
-        ) {
-
-
-            composable(Screen.BottomScreen.Home.bRoute) {
-                //TODO home screen
-
-
-                HomeView(navController)
-            }
-
-
-            composable(
-                route = "details/{itemId}",
-                arguments = listOf(navArgument("itemId") { type = NavType.IntType; defaultValue = 0 })
-            ) { backStackEntry ->
-                val fetchNewsViewModel: FetchNewsViewModel = viewModel()
-                val categoriesState by fetchNewsViewModel.categoriesState
-                val itemId = backStackEntry.arguments?.getInt("itemId") ?: 0
-                val item = categoriesState.list.find { it.id == itemId }
-                item?.let {
-                    TitleDescriptionScreen(
-                        itemId = it.id,
-                        title = it.title,
-                        description = it.description,
-                        it.image
-
-                    )
-                } ?: run {
-
-
-                }
-            }
-
-
-
-
-            composable(Screen.BottomScreen.Browse.bRoute) {
-                //TODO Browse screen
-                BrowseView(navController)
-            }
-
-            composable(Screen.BottomScreen.Library.bRoute) {
-                //TODO Library screen
-                Library()
-            }
-
-
-            composable(Screen.DrawerScreen.Account.route) {
-
-                AccountView(authViewModel)
-            }
-            composable(Screen.DrawerScreen.Subscription.route) {
-                SubscriptionView()
-            }
-
-            composable("chat_screen") {
-                Content(navController)
-            }
-            composable("settings_screen") {
-                MyThemedApp(
-                    isDarkModeEnabled = darkThemeSwitchState.value,
-                    content = {
-                        SettingsScreen(
-                            darkThemeSwitchState = darkThemeSwitchState,
-                            notificationSwitchState = notificationSwitchState,
-                            applyTheme = { darkModeEnabled: Boolean ->
-                                darkThemeSwitchState.value = darkModeEnabled
-                            }
-                        )
-                    }
-                )
-            }
-
-
-
-        }
-    }
-
-     */
 
     // Wrap the entire Navigation with MyThemedApp to apply the dark mode theme
     MyThemedApp(
@@ -517,7 +430,14 @@ fun Navigation(navController:NavController,viewModel: MainViewModel,pd:PaddingVa
                     Library(navController)
                 }
                 composable("favorite_list_screen") {
-                    FavoriteListScreen(favoriteList = favoriteList,navController)
+                    // Ensure navController is passed correctly
+                  //  val navController = rememberNavController()
+
+                    // Pass `favoriteList` and `navController` to the FavoriteListScreen
+                    FavoriteListScreen(
+                        favoriteList = favoriteList,
+                        navController = navController
+                    )
                 }
 
                 composable("contact_us") {

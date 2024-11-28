@@ -90,6 +90,8 @@ dependencies {
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation ("com.google.code.gson:gson:2.10.1")
     implementation ("androidx.core:core-ktx:1.13.1")
+    implementation("androidx.room:room-common-jvm:2.7.0-alpha11")
+    implementation("androidx.room:room-ktx:2.6.1")
 
 
     val nav_version = "2.7.5"

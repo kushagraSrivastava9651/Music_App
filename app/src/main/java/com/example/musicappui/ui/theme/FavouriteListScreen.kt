@@ -20,9 +20,14 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,21 +40,44 @@ import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.example.musicappui.R
 import com.google.gson.Gson
+
 @Composable
-fun FavoriteListScreen(favoriteList: List<Item>,navController: NavController) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFEAF4FA)) // Muted blue background
-    ) {
-        items(favoriteList) { item ->
-            FavoriteItem(item = item,navController)
+fun FavoriteListScreen(favoriteList: List<Item>, navController: NavController) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text("Favorite List", color = Color.White)
+                },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            Icons.Default.ArrowBack,
+                            contentDescription = "Back",
+                            tint = Color.White
+                        )
+                    }
+                },
+                backgroundColor = Color(0xFF4A90E2), // You can replace with your custom color
+                elevation = 4.dp
+            )
+        },
+        backgroundColor = Color(0xFFEAF4FA) // Background color for the screen
+    ) { paddingValues ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues) // Ensure proper padding below the TopAppBar
+        ) {
+            items(favoriteList) { item ->
+                FavoriteItem(item = item, navController)
+            }
         }
     }
 }
 
 @Composable
-fun FavoriteItem(item: Item, navController:NavController) {
+fun FavoriteItem(item: Item, navController: NavController) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -57,7 +85,6 @@ fun FavoriteItem(item: Item, navController:NavController) {
             .clickable {
                 navController.navigate(
                     "details_screen/${Uri.encode(Gson().toJson(item))}"
-
                 )
             }
             .background(Color.White, shape = MaterialTheme.shapes.medium) // Card-like background
@@ -93,8 +120,6 @@ fun FavoriteItem(item: Item, navController:NavController) {
             style = MaterialTheme.typography.caption,
             color = Color(0xFF757575) // Light gray for timestamps
         )
-
-
     }
     Divider(color = Color.DarkGray)
 }

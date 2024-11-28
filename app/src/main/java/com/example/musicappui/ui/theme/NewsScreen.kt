@@ -63,11 +63,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.runtime.*
- import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
- import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -77,30 +77,41 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.musicappui.R
- import com.example.musicappui.ui.theme.Item
+import com.example.musicappui.ui.theme.Item
 
 // Define mutable list to store favorites
-val favoriteList = mutableStateListOf<Item>()
+var favoriteList = mutableStateListOf<Item>()
 
 // Define mutable list to store favorites
 
 @Composable
-fun TitleDescriptionScreen(itemId: Int, title: String, description: String, drawableResId: String) {
-    val backgroundColor = Color(0xFFFAFAFA) // White background
-    val primaryColor = Color(0xFF4A90E2) // Muted Blue
-    val secondaryColor = Color(0xFF34C759) // Muted Green
-    val textColor = Color.Black
+fun TitleDescriptionScreen(
+    itemId: Int,
+    title: String,
+    description: String,
+    drawableResId: String
+) {
+    // Get the ViewModel instance
+    val viewModel: FavoriteViewModel = viewModel()
+
+    // Now, you can access the favorite list from the ViewModel
+      favoriteList = viewModel.favoriteList
+
+    var isFavorite by remember {
+        mutableStateOf(favoriteList.any { it.id == itemId }) // Check if the current item is a favorite
+    }
+
     val context = LocalContext.current
-    var isFavorite by remember { mutableStateOf(Item(description,itemId,drawableResId,title) in favoriteList) }
 
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .background(backgroundColor),
+            .background(Color(0xFFFAFAFA)),
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -113,7 +124,7 @@ fun TitleDescriptionScreen(itemId: Int, title: String, description: String, draw
                 // Title text
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.h4.copy(color = primaryColor),
+                    style = MaterialTheme.typography.h4.copy(color = Color(0xFF4A90E2)),
                     modifier = Modifier.padding(bottom = 16.dp),
                     textAlign = TextAlign.Center
                 )
@@ -148,7 +159,7 @@ fun TitleDescriptionScreen(itemId: Int, title: String, description: String, draw
                 Text(
                     text = description,
                     style = MaterialTheme.typography.body1,
-                    color = textColor,
+                    color = Color.Black,
                     textAlign = TextAlign.Justify,
                     modifier = Modifier.widthIn(max = 400.dp)
                 )
@@ -175,16 +186,12 @@ fun TitleDescriptionScreen(itemId: Int, title: String, description: String, draw
                     IconButton(
                         onClick = {
                             isFavorite = !isFavorite
-                            if (isFavorite) {
-                                favoriteList.add(Item(description,itemId,drawableResId,title))
-                            } else {
-                                favoriteList.remove(Item(description,itemId,drawableResId,title))
-                            }
+                            viewModel.toggleFavorite(Item(description, itemId, drawableResId, title))
                         },
                         modifier = Modifier
                             .background(
-                                if (isFavorite) secondaryColor.copy(alpha = 0.2f)
-                                else primaryColor.copy(alpha = 0.1f),
+                                if (isFavorite) Color(0xFF34C759).copy(alpha = 0.2f)
+                                else Color(0xFF4A90E2).copy(alpha = 0.1f),
                                 shape = MaterialTheme.shapes.small
                             )
                             .padding(8.dp)
@@ -195,7 +202,7 @@ fun TitleDescriptionScreen(itemId: Int, title: String, description: String, draw
                                 else R.drawable.baseline_favorite_border_24
                             ),
                             contentDescription = "Favorite",
-                            tint = if (isFavorite) secondaryColor else primaryColor
+                            tint = if (isFavorite) Color(0xFF34C759) else Color(0xFF4A90E2)
                         )
                     }
 
@@ -205,13 +212,13 @@ fun TitleDescriptionScreen(itemId: Int, title: String, description: String, draw
                             shareContent(context, title, description)
                         },
                         modifier = Modifier
-                            .background(primaryColor.copy(alpha = 0.1f), shape = MaterialTheme.shapes.small)
+                            .background(Color(0xFF4A90E2).copy(alpha = 0.1f), shape = MaterialTheme.shapes.small)
                             .padding(8.dp)
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.baseline_share_24),
                             contentDescription = "Share",
-                            tint = primaryColor
+                            tint = Color(0xFF4A90E2)
                         )
                     }
                 }
@@ -227,15 +234,4 @@ fun shareContent(context: Context, title: String, description: String) {
         type = "text/plain"
     }
     context.startActivity(Intent.createChooser(shareIntent, "Share via"))
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewTitleDescriptionScreen() {
-    TitleDescriptionScreen(
-        itemId = 1,
-        title = "Sample Title",
-        description = "This is a sample description for the item. It provides detailed information about the item, including its features, benefits, and usage instructions.",
-        drawableResId = "https://via.placeholder.com/150"
-    )
 }
