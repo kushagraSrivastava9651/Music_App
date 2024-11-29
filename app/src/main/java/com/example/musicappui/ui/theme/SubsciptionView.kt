@@ -33,7 +33,7 @@ fun SubscriptionView() {
             .padding(16.dp).background(backgroundColor)
     ) {
         // Header Section
-        Text(text = "Subscription Plans", style = MaterialTheme.typography.h4)
+        Text(text = "Subscription Plans (Currently FREE)", style = MaterialTheme.typography.h4)
 
         // Subscription Plans Section
         SubscriptionPlan(name = "Basic", price = "$9.99/month")

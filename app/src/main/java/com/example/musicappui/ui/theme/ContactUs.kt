@@ -52,21 +52,6 @@ val backgroundColor = Color(0xFFFAFAFA) // White background
 val primaryColor = Color(0xFF4A90E2) // Muted Blue
 val secondaryColor = Color(0xFF34C759) // Muted Green
 val textColor = Color.Black
-
-// Function to send an email
-fun sendEmail(context: android.content.Context, email: String, subject: String, message: String) {
-    val intent = Intent(Intent.ACTION_SENDTO).apply {
-        data = Uri.parse("mailto:") // Only email apps should handle this
-        putExtra(Intent.EXTRA_EMAIL, arrayOf(email)) // Recipient email
-        putExtra(Intent.EXTRA_SUBJECT, subject) // Email subject
-        putExtra(Intent.EXTRA_TEXT, message) // Email body
-    }
-    try {
-        context.startActivity(Intent.createChooser(intent, "Send Email"))
-    } catch (e: Exception) {
-        Toast.makeText(context, "No email client found.", Toast.LENGTH_SHORT).show()
-    }
-}
 @Composable
 fun ContactScreen(navController: NavController) {
     val context = LocalContext.current
@@ -77,21 +62,20 @@ fun ContactScreen(navController: NavController) {
     var phoneNumber by remember { mutableStateOf("") }
     var message by remember { mutableStateOf("") }
 
-    var selectedFileName by remember { mutableStateOf("") } // To display the chosen file name
+    var selectedFileUri by remember { mutableStateOf<Uri?>(null) } // To hold the selected file URI
 
     // Launcher for opening file picker
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         if (uri != null) {
-            selectedFileName = getFileName(context, uri) ?: "Unknown File"
-            Toast.makeText(context, "File Selected: $selectedFileName", Toast.LENGTH_SHORT).show()
+            selectedFileUri = uri
+            Toast.makeText(context, "File Selected: ${uri.path}", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(context, "No file selected", Toast.LENGTH_SHORT).show()
         }
     }
 
-   // Divider(color = Color.DarkGray)
     Scaffold(
         topBar = {
             TopAppBar(
@@ -117,7 +101,6 @@ fun ContactScreen(navController: NavController) {
             verticalArrangement = Arrangement.Top
         ) {
             // Header Section
-           // Divider(color = Color.DarkGray)
             Text(
                 text = "QUICK CONTACT",
                 color = textColor,
@@ -190,15 +173,16 @@ fun ContactScreen(navController: NavController) {
 
                 Button(
                     onClick = {
-                        if (email.isNotEmpty() && message.isNotEmpty()) {
+                        if (email.isNotEmpty() && message.isNotEmpty() && selectedFileUri != null) {
                             sendEmail(
                                 context = context,
                                 email = "kushagra3946@gmail.com",
                                 subject = "Quick Contact: $name",
-                                message = "Phone: $phoneNumber\n\n$message\n\nSelected File: $selectedFileName"
+                                message = "Phone: $phoneNumber\n\n$message",
+                                attachmentUri = selectedFileUri
                             )
                         } else {
-                            Toast.makeText(context, "Please fill all required fields.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Please fill all required fields and choose a file.", Toast.LENGTH_SHORT).show()
                         }
                     },
                     colors = ButtonDefaults.buttonColors(backgroundColor = primaryColor),
@@ -210,18 +194,20 @@ fun ContactScreen(navController: NavController) {
                     Text("Send", color = Color.White)
                 }
             }
+
             Spacer(modifier = Modifier.height(8.dp))
 
+
+
             // Show selected file name
-            if (selectedFileName.isNotEmpty()) {
+            if (selectedFileUri != null) {
                 Text(
-                    text = "Selected File: $selectedFileName",
+                    text = "Selected File: ${selectedFileUri?.path}",
                     color = textColor,
                     fontSize = 14.sp,
                     modifier = Modifier.padding(top = 8.dp)
                 )
             }
-
             Spacer(modifier = Modifier.height(32.dp))
 
             // Contact Details Section
@@ -255,5 +241,29 @@ fun ContactScreen(navController: NavController) {
                 )
             }
         }
+    }
+}
+
+fun sendEmail(
+    context: android.content.Context,
+    email: String,
+    subject: String,
+    message: String,
+    attachmentUri: Uri?
+) {
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        type = "image/*" // Specify the file type (image in this case)
+        putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
+        putExtra(Intent.EXTRA_SUBJECT, subject)
+        putExtra(Intent.EXTRA_TEXT, message)
+
+        attachmentUri?.let {
+            putExtra(Intent.EXTRA_STREAM, it) // Attach the image file URI
+        }
+    }
+    try {
+        context.startActivity(Intent.createChooser(intent, "Send Email"))
+    } catch (e: Exception) {
+        Toast.makeText(context, "No email client found.", Toast.LENGTH_SHORT).show()
     }
 }
