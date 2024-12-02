@@ -31,16 +31,20 @@
 - **Gemini AI Integration**: Enhance news extraction with AI capabilities.
 - **Improved Accessibility**: Multi-lingual support for a global audience.
 
-<!-- Screenshots -->
-## Screenshots
+ 
+ 
+
+ <!-- Screenshots -->
+## 📸 Screenshots
 
 <p align="center">
-  <img src="UI.jpeg" alt="Login Screen" width="250">
-  &nbsp;&nbsp;
-  <img src="WhatsApp Image 2024-07-12 at 21.14.53.jpeg" alt="SignUp Screen" width="250">
-  &nbsp;&nbsp;
-  <img src="WhatsApp Image 2024-07-12 at 21.14.53 (1).jpeg" alt="Add Account" width="250">
+  <img 
+    src="UI.jpeg" 
+    alt="Login Screen" 
+    style="width: 500px; height: 500px;"
+  />
 </p>
+
 
  
 <!-- Technologies Used -->
