@@ -35,7 +35,7 @@
 ## Screenshots
 
 <p align="center">
-  <img src="WhatsApp Image 2024-07-12 at 21.14.52.jpeg" alt="Login Screen" width="250">
+  <img src="UI.jpeg" alt="Login Screen" width="250">
   &nbsp;&nbsp;
   <img src="WhatsApp Image 2024-07-12 at 21.14.53.jpeg" alt="SignUp Screen" width="250">
   &nbsp;&nbsp;
