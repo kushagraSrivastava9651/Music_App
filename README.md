@@ -41,7 +41,7 @@
   <img 
     src="UI.jpeg" 
     alt="Login Screen" 
-    style="width: 500px; height: 500px;"
+    style="width: 750px; height: 500px;"
   />
 </p>
 
